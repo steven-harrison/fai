@@ -138,13 +138,22 @@ umount_csspace() {
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 umount_target() {
 
+    : ${flag_umount_chroot:=1}
+
     if [ "$target" != '/' ]; then
 	# do not umount during softupdate
 	umount $FAI_ROOT/proc $FAI_ROOT/sys $FAI_ROOT/dev/pts $FAI_ROOT/dev 2>/dev/null
 	for dir in $(mount | grep $target | grep -E -v "media/mirror|tmpfs"| awk '{print $3}' | sort -r); do
-            mountpoint -q $dir && umount $dir
+            if [ "${dir}" != "${target}" ] ; then
+                # Unmount everything except the root directory
+                mountpoint -q $dir && umount -l $dir
+            fi
 	done
     fi
+
+    # Finally, unmount the chroot directory
+    [ "$flag_umount_chroot" ] && mountpoint -q ${target} && umount -l ${target}
+
 }
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 cleanup_devicemapper() {

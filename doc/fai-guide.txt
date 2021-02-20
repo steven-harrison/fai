@@ -1315,6 +1315,9 @@ Used by `setup-storage(8)`. Partitions marked with +preserve_reinstall+
 are preserved unless this flag is set. Often, this flag is set in a
 file 'class/*.var' by using setting 'flag_initial=1'.
 
+umount_chroot::
+Unmount the chroot directory at the end (default is to unmount.)
+
 == [[install]] FAI installs your plan
 
 === The early part of an installation
